@@ -52,7 +52,6 @@ library(scales)
 Para iniciarmos o nosso processo de exploração dos dados, vamos inicialmente passar o link do repositório com as duas bases que utilizaremos em nosso projeto:
 
 ```{r}
-# mudar link para o repositório do R quando criado
 url_vendas = "dados/zoop_vendas.csv"
 url_clientes = "dados/zoop_clientes.csv"
 ```
