@@ -49,7 +49,7 @@ library(scales)
 
 ## Obtendo os dados
 
-Para iniciarmos o nosso processo de exploração dos dados, vamos inicialmente passar o link do repositório com as duas bases que utilizaremos em nosso projeto:
+Para iniciarmos o nosso processo de exploração dos dados, vamos inicialmente passar o caminho das duas bases que utilizaremos em nosso projeto::
 
 ```{r}
 url_vendas = "dados/zoop_vendas.csv"
