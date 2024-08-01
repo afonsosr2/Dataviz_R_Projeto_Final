@@ -141,7 +141,7 @@ Já exploramos um pouco das duas bases do projeto e ajustamos os dados para faci
 O pacote **ggplot2** trabalha com a criação de visualização de dados em camadas. Ou seja, para construir um gráfico, nós precisamos montá-los aos poucos adicionando os recursos camada por camada. Ao todo, o ggplot2 possui uma série de elementos gramaticais que constituem as camadas e recursos de um visual:
 
 | Elemento    | Descrição                                                       |
-|------------------|------------------------------------------------------|
+|-------------------|-----------------------------------------------------|
 | data        | Os dados que serão utilizados para a construção do visual       |
 | aesthetics  | A dimensão visual dos dados (coordenadas e elementos estéticos) |
 | geometries  | Os elementos visuais utilizados a partir dos dados              |
