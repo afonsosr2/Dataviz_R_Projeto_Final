@@ -86,7 +86,7 @@ Escreva aqui o que conseguiu interpretar com esse visual...
 
 ## Gerando 2º visual
 
-> Qual a distribuição das avaliações dos clientes da Zoop por estado na Região Nordeste?
+> Qual a distribuição das idades dos clientes da Zoop por estado na Região Centro-Oeste?
 
 ```{r}
 dados_completos %>% filter(regiao == "Centro-Oeste") %>% 
@@ -217,7 +217,7 @@ Escreva aqui o que conseguiu interpretar com esse visual...
 ### Paleta de cores da Zoop
 
 | red_1                               | red_2                               | red_3                               | grey_1                               | grey_2                               | grey_3                               | blue_1                               | blue_2                               | blue_3                               | blue_4  |
-|--------|--------|--------|-------|--------|--------|--------|-------|--------|--------|
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 | #ee8399                             | #e23155                             | #881d33                             | #f3f3f3                              | #ebebeb                              | #8d8d8d                              | #a3adbd                              | #5e708c                              | #19325b                              | #0d192e |
 | ![](imagens/paleta_cores/RED_1.png) | ![](imagens/paleta_cores/RED_2.png) | ![](imagens/paleta_cores/RED_3.png) | ![](imagens/paleta_cores/GREY_1.png) | ![](imagens/paleta_cores/GREY_2.png) | ![](imagens/paleta_cores/GREY_3.png) | ![](imagens/paleta_cores/BLUE_1.png) | ![](imagens/paleta_cores/BLUE_2.png) | ![](imagens/paleta_cores/BLUE_3.png) |         |
 
@@ -398,7 +398,7 @@ g_vendas_por_mes_regiao
 ### Adicionando anotações no visual
 
 ::: {.callout-tip appearance="simple"}
-Para te ajudar na criação das anaotações, este [link](https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#text) traz ótimos exemplos de como construir visuais atrativos com ggplot2.
+Para te ajudar na criação das anotações, este [link](https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#text) traz ótimos exemplos de como construir visuais atrativos com ggplot2.
 :::
 
 ```{r}

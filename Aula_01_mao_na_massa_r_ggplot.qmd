@@ -85,7 +85,7 @@ Escreva aqui o que conseguiu interpretar com esse visual...
 
 ## Gerando 2º visual
 
-> Qual a distribuição das avaliações dos clientes da Zoop por estado na Região Nordeste?
+> Qual a distribuição das idades dos clientes da Zoop por estado na Região Centro-Oeste?
 
 ```{r}
 
