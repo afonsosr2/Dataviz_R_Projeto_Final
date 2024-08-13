@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.56">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Afonso Augusto Rios">
+
+<title>R: Aplicando Data Visualization com ggplot2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Projeto_Final_Dataviz_R_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Projeto_Final_Dataviz_R_files/libs/quarto-html/quarto.js"></script>
+<script src="Projeto_Final_Dataviz_R_files/libs/quarto-html/popper.min.js"></script>
+<script src="Projeto_Final_Dataviz_R_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Projeto_Final_Dataviz_R_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Projeto_Final_Dataviz_R_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Projeto_Final_Dataviz_R_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Projeto_Final_Dataviz_R_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Projeto_Final_Dataviz_R_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Projeto_Final_Dataviz_R_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">R: Aplicando Data Visualization com ggplot2</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Afonso Augusto Rios </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="conhecendo-os-dados" class="level1">
+<h1>Conhecendo os dados</h1>
+<p><img src="imagens/logos/logo_branca_fundo_azul.png" class="img-fluid"></p>
+<p>A <strong>Zoop</strong> é uma grande varejista que atende a todas as regiões do Brasil por meio do seu <strong>e-commerce</strong>. Ela é conhecida pela ampla variedade em seus produtos buscando atender a todo tipo de público.</p>
+<p>Para gerenciar o seu alcance, bem como o faturamento de seu setor em lojas online, ela consolida os dados em diferentes períodos de tempo e avalia esses dados para gerar insights e tomar algumas decisões estratégicas em seu negócio. Neste projeto, vamos ter acesso aos dados de parte da sua clientela do e-commerce dentro do ano de 2023.</p>
+<p>Você, como <strong>cientista de dados júnior</strong> da empresa, precisará gerar visuais que auxiliem na construção de relatórios de acordo com algumas premissas passadas pelas partes interessadas realizando uma rápida análise do público que possuimos na loja virtual e do faturamento da empresa.</p>
+<p><strong>Problema de negócio:</strong></p>
+<p>O time de dados da <strong>Zoop</strong> precisa extrair os dados e gerar informações por meio de visuais que possam ser apresentados a diretoria da empresa apontando os dados de faturamento e traçando o perfil do cliente para auxiliar na tomada de decisão em sua loja online.</p>
+<p><strong>Base de dados</strong></p>
+<p>Vamos importar duas bases de dados:</p>
+<blockquote class="blockquote">
+<p>Dados de clientes do e-commerce da Zoop, separados pelo código identificador da compra.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Dados de vendas do e-commerce da Zoop em 2023, separados pelo código identificador da compra.</p>
+</blockquote>
+<p>Esses dados serão lidos a partir do repositório compartilhado pelo GitHub.</p>
+<p><strong>Desafio</strong></p>
+<p>Você, como um(a) cientista de dados júnior, passará por um treinamento a fim de testar seus conhecimentos de análise de dados para entrar no time de dados da Zoop. O seu desafio é <strong>extrair os dados</strong> da base de clientes e vendas da empresa e <strong>construir visuais</strong> que possam agregar valor à apresentação dos resultados da Zoop em 2023. Para isso, serão repassados algunsquestionamentos que foram separados para que você possa contribuir na construção do storytelling das vendas da empresa.</p>
+<p>Como grande parte dos analistas do time de dados utilizam a <strong>linguagem R</strong>, você precisará realizar o processo da análise exploratória dos dados (AED) e a criação dos visuais utilizando essa linguagem.</p>
+<section id="importando-os-pacotes-do-projeto" class="level2">
+<h2 class="anchored" data-anchor-id="importando-os-pacotes-do-projeto">Importando os pacotes do projeto</h2>
+</section>
+<section id="obtendo-os-dados" class="level2">
+<h2 class="anchored" data-anchor-id="obtendo-os-dados">Obtendo os dados</h2>
+<p>Para iniciarmos o nosso processo de exploração dos dados, vamos inicialmente passar o caminho das duas bases que utilizaremos em nosso projeto:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>url_vendas <span class="ot">=</span> <span class="st">"dados/zoop_vendas.csv"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>url_clientes <span class="ot">=</span> <span class="st">"dados/zoop_clientes.csv"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Após esta etapa, vamos criar 2 tabelas com os dados dos clientes e das vendas da Zoop separadamente e dar uma pequena checada nas tabelas extraídas. Para isso utilizaremos a função <code>read_csv</code> do <strong>readr</strong> que gera um <code>tibble</code> que analisa os dados e supõe os seus tipos pelos registros lidos. Usaremos <code>show_col_types = FALSE</code> para trazer apenas a tabela para as variáveis <code>vendas</code>e <code>clientes</code>.</p>
+<p>Para a tabela de vendas vamos ler os primeiros dados, observando as colunas e os registros utilizando a função <code>head()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>vendas <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(url_vendas, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(vendas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 8
+  ID_compra data       horario categoria    preco_unitario quantidade  frete
+      &lt;dbl&gt; &lt;date&gt;     &lt;time&gt;  &lt;chr&gt;                 &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+1         6 2023-01-03 20:40   Tecnologia            899.           4  713. 
+2         5 2023-01-03 21:48   Casa/Móveis           116.           1    0  
+3         9 2023-01-03 17:08   Beleza/Saúde           68.9          2   13.8
+4         4 2023-01-03 14:29   Casa/Móveis            80.9          5   40.4
+5         8 2023-01-03 18:02   Beleza/Saúde          165            4    0  
+6         2 2023-01-03 18:42   Tecnologia           2028.           5 1724. 
+# ℹ 1 more variable: metodo_pagamento &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>Já para a tabela de clientes vamos usar o <code>glimpse()</code> que mostra um resumo da estrutura dos dados (colunas e seus tipos)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>clientes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(url_clientes, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(clientes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 6,169
+Columns: 9
+$ ID_compra        &lt;dbl&gt; 904, 4613, 5579, 2405, 2485, 756, 3020, 2390, 3957, 5…
+$ ID_cliente       &lt;dbl&gt; 8972, 5120, 1847, 2846, 2715, 9555, 3793, 4903, 3413,…
+$ cidade           &lt;chr&gt; "Natal", "São Paulo", "São Paulo", "São Paulo", "Salv…
+$ uf               &lt;chr&gt; "Rio Grande do Norte", "São Paulo", "São Paulo", "São…
+$ regiao           &lt;chr&gt; "Nordeste", "Sudeste", "Sudeste", "Sudeste", "Nordest…
+$ idade            &lt;dbl&gt; 49, 49, 24, 38, 30, 46, 32, 26, 30, 28, 25, 31, 40, 4…
+$ sexo_biologico   &lt;chr&gt; "Masculino", "Feminino", "Feminino", "Feminino", "Fem…
+$ cashback         &lt;chr&gt; "Não", "Não", "Não", "Sim", "Não", "Não", "Sim", "Não…
+$ avaliacao_compra &lt;dbl&gt; 9, 9, 8, 7, 10, 7, 9, 9, 10, 8, 7, 10, 9, 8, 8, 7, 10…</code></pre>
+</div>
+</div>
+<p>Já estamos com as bases que vamos utilizar. Mas quais são as perguntas levantadas para respondermos com a análise destes dados?</p>
+<section id="questionamentos" class="level3">
+<h3 class="anchored" data-anchor-id="questionamentos"><strong>Questionamentos</strong></h3>
+<section id="vendas" class="level4">
+<h4 class="anchored" data-anchor-id="vendas">Vendas</h4>
+<ol type="1">
+<li>Qual foi o faturamento por categoria em 2023?</li>
+<li>Qual foi o desempenho das vendas ao longo dos meses em 2023?</li>
+<li>Como esta dividida a venda por trimestre por método de pagamento? O método PIX tem tido boa adesão?</li>
+</ol>
+</section>
+<section id="perfil-do-cliente" class="level4">
+<h4 class="anchored" data-anchor-id="perfil-do-cliente">Perfil do cliente</h4>
+<ol start="4" type="1">
+<li>Como está distribuído o nosso público por idade? Existe um grupo que sobressai relacionado a região e ao sexo biológico?</li>
+<li>Dos clientes que participam do nosso programa de cashback, qual a proporção por região do país? Quais são as 3 principais regiões? Precisamos reforçar a campanha de adesão em quais delas?</li>
+</ol>
+<p>Agora que possuímos a base de dados e as perguntas que precisamos responder, vamos explorar um pouco cada uma das bases para verificar se está tudo certo para começarmos a análise dos dados?</p>
+</section>
+</section>
+</section>
+<section id="tratando-os-dados" class="level2">
+<h2 class="anchored" data-anchor-id="tratando-os-dados">Tratando os dados</h2>
+<p>Agora, vamos fazer uma breve exploração dos dados para compreender um pouco sobre eles. Lembrando que os dados das bases de vendas e clientes já estão limpos (sem dados faltantes ou nulos), restando apenas verificar se os tipos estão corretos ou se podemos adicionar mais informações.</p>
+<section id="tabela-das-vendas" class="level3">
+<h3 class="anchored" data-anchor-id="tabela-das-vendas">Tabela das vendas</h3>
+<p>Começando pela base de vendas, vamos entender os dados que possuímos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>vendas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6,169 × 8
+   ID_compra data       horario categoria       preco_unitario quantidade  frete
+       &lt;dbl&gt; &lt;date&gt;     &lt;time&gt;  &lt;chr&gt;                    &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+ 1         6 2023-01-03 20:40   Tecnologia               899.           4 7.13e2
+ 2         5 2023-01-03 21:48   Casa/Móveis              116.           1 0     
+ 3         9 2023-01-03 17:08   Beleza/Saúde              68.9          2 1.38e1
+ 4         4 2023-01-03 14:29   Casa/Móveis               80.9          5 4.05e1
+ 5         8 2023-01-03 18:02   Beleza/Saúde             165            4 0     
+ 6         2 2023-01-03 18:42   Tecnologia              2028.           5 1.72e3
+ 7         3 2023-01-03 23:47   Supermercado              84.9          5 0     
+ 8         1 2023-01-03 00:13   Eletrodoméstic…         2170.           1 1.39e2
+ 9         7 2023-01-03 17:40   Livros                    75.9          5 1.90e1
+10        11 2023-01-04 21:50   Casa/Móveis               13.9          5 3.48e0
+# ℹ 6,159 more rows
+# ℹ 1 more variable: metodo_pagamento &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>Como podemos observar, o <code>tibble</code> gerado foi bem assertivo, acertando os dados numéricos, categóricos e de data. Temos mais de 6000 registros de venda e as características das vendas como hora e dia da compra, categoria do produto, preço, método de pagamento entre outros</p>
+<p>Porém, como vamos utilizar esses dados para a construção de visuais, uma boa prática é transformar dados categóricos que se repetem (categoria e método de pagamento) em <strong>factor</strong>. Faremos essa alteração da seguinte forma:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>vendas <span class="ot">&lt;-</span> vendas <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.character, as.factor)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>vendas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6,169 × 8
+   ID_compra data       horario categoria       preco_unitario quantidade  frete
+       &lt;dbl&gt; &lt;date&gt;     &lt;time&gt;  &lt;fct&gt;                    &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+ 1         6 2023-01-03 20:40   Tecnologia               899.           4 7.13e2
+ 2         5 2023-01-03 21:48   Casa/Móveis              116.           1 0     
+ 3         9 2023-01-03 17:08   Beleza/Saúde              68.9          2 1.38e1
+ 4         4 2023-01-03 14:29   Casa/Móveis               80.9          5 4.05e1
+ 5         8 2023-01-03 18:02   Beleza/Saúde             165            4 0     
+ 6         2 2023-01-03 18:42   Tecnologia              2028.           5 1.72e3
+ 7         3 2023-01-03 23:47   Supermercado              84.9          5 0     
+ 8         1 2023-01-03 00:13   Eletrodoméstic…         2170.           1 1.39e2
+ 9         7 2023-01-03 17:40   Livros                    75.9          5 1.90e1
+10        11 2023-01-04 21:50   Casa/Móveis               13.9          5 3.48e0
+# ℹ 6,159 more rows
+# ℹ 1 more variable: metodo_pagamento &lt;fct&gt;</code></pre>
+</div>
+</div>
+<p>Legal! Já ajustamos nosso dados categóricos. Agora, que tal criarmos uma variável que já traga o valor total da compra?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>vendas <span class="ot">&lt;-</span> vendas <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total =</span> preco_unitario <span class="sc">*</span> quantidade <span class="sc">+</span> frete)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="tabela-dos-clientes" class="level3">
+<h3 class="anchored" data-anchor-id="tabela-dos-clientes">Tabela dos clientes</h3>
+<p>Vamos agora para a base de clientes observar também os dados que possuímos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>clientes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6,169 × 9
+   ID_compra ID_cliente cidade      uf      regiao idade sexo_biologico cashback
+       &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;   
+ 1       904       8972 Natal       Rio Gr… Norde…    49 Masculino      Não     
+ 2      4613       5120 São Paulo   São Pa… Sudes…    49 Feminino       Não     
+ 3      5579       1847 São Paulo   São Pa… Sudes…    24 Feminino       Não     
+ 4      2405       2846 São Paulo   São Pa… Sudes…    38 Feminino       Sim     
+ 5      2485       2715 Salvador    Bahia   Norde…    30 Feminino       Não     
+ 6       756       9555 João Pessoa Paraíba Norde…    46 Feminino       Não     
+ 7      3020       3793 Brasília    Distri… Centr…    32 Masculino      Sim     
+ 8      2390       4903 São Paulo   São Pa… Sudes…    26 Masculino      Não     
+ 9      3957       3413 Salvador    Bahia   Norde…    30 Feminino       Não     
+10      5142       3556 Salvador    Bahia   Norde…    28 Feminino       Não     
+# ℹ 6,159 more rows
+# ℹ 1 more variable: avaliacao_compra &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Aqui, vamos fazer apenas aquele mesmo processo do factor. Podemos utilizar o mesmo código modificando apenas para a base clientes</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>clientes <span class="ot">&lt;-</span> clientes <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.character, as.factor)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(clientes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 9
+  ID_compra ID_cliente cidade      uf       regiao idade sexo_biologico cashback
+      &lt;dbl&gt;      &lt;dbl&gt; &lt;fct&gt;       &lt;fct&gt;    &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;          &lt;fct&gt;   
+1       904       8972 Natal       Rio Gra… Norde…    49 Masculino      Não     
+2      4613       5120 São Paulo   São Pau… Sudes…    49 Feminino       Não     
+3      5579       1847 São Paulo   São Pau… Sudes…    24 Feminino       Não     
+4      2405       2846 São Paulo   São Pau… Sudes…    38 Feminino       Sim     
+5      2485       2715 Salvador    Bahia    Norde…    30 Feminino       Não     
+6       756       9555 João Pessoa Paraíba  Norde…    46 Feminino       Não     
+# ℹ 1 more variable: avaliacao_compra &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Já exploramos um pouco das duas bases do projeto e ajustamos os dados para facilitar o nosso processo de criação dos gráficos. Vamos começar a colocar a mão na massa e construir o nosso primeiro visual?</p>
+</section>
+</section>
+<section id="construindo-nosso-primeiro-visual" class="level2">
+<h2 class="anchored" data-anchor-id="construindo-nosso-primeiro-visual">Construindo nosso primeiro visual</h2>
+<p>O pacote <strong>ggplot2</strong> trabalha com a criação de visualização de dados em camadas. Ou seja, para construir um gráfico, nós precisamos montá-los aos poucos adicionando os recursos camada por camada. Ao todo, o ggplot2 possui uma série de elementos gramaticais que constituem as camadas e recursos de um visual:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Elemento</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>data</td>
+<td>Os dados que serão utilizados para a construção do visual</td>
+</tr>
+<tr class="even">
+<td>aesthetics</td>
+<td>A dimensão visual dos dados (coordenadas e elementos estéticos)</td>
+</tr>
+<tr class="odd">
+<td>geometries</td>
+<td>Os elementos visuais utilizados a partir dos dados</td>
+</tr>
+<tr class="even">
+<td>statistics</td>
+<td>Representação dos dados para facilitar a compreensão</td>
+</tr>
+<tr class="odd">
+<td>coordinates</td>
+<td>O espaço em que o visual será construído</td>
+</tr>
+<tr class="even">
+<td>themes</td>
+<td>Os recursos externos aos dados para refinar o visual</td>
+</tr>
+<tr class="odd">
+<td>facets</td>
+<td>Plotagem de dados em pequenos múltiplos (segregação de dados)</td>
+</tr>
+</tbody>
+</table>
+<p>Vamos explorar esses elementos gramaticais ao longo do nosso processo de construção do visual. Porém, para a construção do nosso 1º visual focaremos nos três principais elementos: <strong>data</strong>, <strong>aes</strong> e <strong>geom</strong></p>
+<p><strong><em>Vamos observar como é esse processo de construção de um visual?</em></strong></p>
+<p>Primeiro, vamos utilizar a base de vendas e construir um visual que apresente o <strong>Faturamento de vendas por categoria</strong> da Zoop em 2023.</p>
+<section id="passos-para-a-criação-de-uma-visualização" class="level3">
+<h3 class="anchored" data-anchor-id="passos-para-a-criação-de-uma-visualização">Passos para a criação de uma visualização</h3>
+<section id="desenhar-a-camada-base." class="level4">
+<h4 class="anchored" data-anchor-id="desenhar-a-camada-base.">1. Desenhar a camada base.</h4>
+<p>Esta é área que utilizaremos para o visual e seus elementos. É bastante comum chamarmos os dados que vamos utilizar nesta camada.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vendas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="escolher-a-estética-do-gráfico-dimensão-visual" class="level4">
+<h4 class="anchored" data-anchor-id="escolher-a-estética-do-gráfico-dimensão-visual">2. Escolher a estética do gráfico (dimensão visual)</h4>
+<p>Aqui definimos as coordenadas e outros elementos estéticos do visual, baseados nos valores da base de dados.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vendas, <span class="fu">aes</span>(<span class="at">x =</span> categoria, <span class="at">y =</span> total))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="definir-o-elemento-geométrico-tipo-do-visual" class="level4">
+<h4 class="anchored" data-anchor-id="definir-o-elemento-geométrico-tipo-do-visual">3. Definir o elemento geométrico (tipo do visual)</h4>
+<p>Nesta etapa, escolhemos o tipo de gráfico que queremos construir e também quais elementos que gostaríamos de adicionar na área da figura.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vendas, <span class="fu">aes</span>(<span class="at">x =</span> categoria, <span class="at">y =</span> total)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Conseguimos observar acima, a construção de um exemplo de visual (gráfico de colunas) utilizando os 3 elementos básicos da construção de um gráfico com ggplot2. Logo abaixo, temos um exemplo de sintaxe que pode ser aplicado a uma série de visuais passando os dados, suas coordenadas e tipo de visual</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Sintaxe básica na criação de um gráfico:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ggplot(data = <span style="color:red;">dados</span>, aes(x = <span style="color:red;">Var_1</span>, y = <span style="color:red;">Var_2</span>)) + geom_<span style="color:red;">tipo_grafico</span>( )</p>
+</div>
+</div>
+<p>Agora que aprendemos a construir o nosso primeiro visual, que tal começarmos a análise dos dados dos clientes e vendas para respondermos aos questionamentos que recebemos? Vamos aprender a construir muitos mais visuais e com diferentes funcionalidades e aparências.</p>
+</section>
+</section>
+</section>
+</section>
+<section id="explorando-dados-dos-clientes" class="level1">
+<h1>Explorando dados dos clientes</h1>
+<p>Vamos começar analisando os dados dos clientes. Aqui, vamos optar por uma análise exploratória, sem muitas estilizações e ajustes nos gráficos que nos ajudaram a analisar e levantar hipóteses sobre o perfil dos clientes. O foco será trazer em texto os insights que teremos com os visuais.</p>
+<section id="distribuindo-dados-de-uma-única-variável" class="level2">
+<h2 class="anchored" data-anchor-id="distribuindo-dados-de-uma-única-variável">Distribuindo dados de uma única variável</h2>
+<p>A nossa base de dados de clientes é definida pelo ID da compra. Ou seja, 1 ou mais clientes podem realizar mais de uma compra. Então, para verificar isso, vamos contar a quantidade clientes únicos que possuímos.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>clientes <span class="sc">%&gt;%</span> <span class="fu">count</span>(ID_cliente, <span class="at">sort =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4,453 × 2
+   ID_cliente     n
+        &lt;dbl&gt; &lt;int&gt;
+ 1       5267     7
+ 2       4421     6
+ 3       5145     6
+ 4       9864     6
+ 5       1442     5
+ 6       6698     5
+ 7       9363     5
+ 8       1025     4
+ 9       1172     4
+10       1530     4
+# ℹ 4,443 more rows</code></pre>
+</div>
+</div>
+<p>Foi possível notar que na verdade temos 4453 clientes únicos em nossa base. Portanto, vamos criar uma nova tabela que salva os dados de cada um deles unicamente, para que possamos utilizar em nossos visuais.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>clientes_unicos <span class="ot">&lt;-</span> clientes <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(ID_cliente, <span class="at">.keep_all =</span> T)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>clientes_unicos</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4,453 × 9
+   ID_compra ID_cliente cidade      uf      regiao idade sexo_biologico cashback
+       &lt;dbl&gt;      &lt;dbl&gt; &lt;fct&gt;       &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;          &lt;fct&gt;   
+ 1       904       8972 Natal       Rio Gr… Norde…    49 Masculino      Não     
+ 2      4613       5120 São Paulo   São Pa… Sudes…    49 Feminino       Não     
+ 3      5579       1847 São Paulo   São Pa… Sudes…    24 Feminino       Não     
+ 4      2405       2846 São Paulo   São Pa… Sudes…    38 Feminino       Sim     
+ 5      2485       2715 Salvador    Bahia   Norde…    30 Feminino       Não     
+ 6       756       9555 João Pessoa Paraíba Norde…    46 Feminino       Não     
+ 7      3020       3793 Brasília    Distri… Centr…    32 Masculino      Sim     
+ 8      2390       4903 São Paulo   São Pa… Sudes…    26 Masculino      Não     
+ 9      3957       3413 Salvador    Bahia   Norde…    30 Feminino       Não     
+10      5142       3556 Salvador    Bahia   Norde…    28 Feminino       Não     
+# ℹ 4,443 more rows
+# ℹ 1 more variable: avaliacao_compra &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Pronto! Agora temos a tabela com os clientes únicos e podemos partir para responder os questionamentos pertinentes ao perfil dos clientes. Vamos começar pelo seguinte caso:</p>
+<section id="como-está-distribuído-o-nosso-público-por-idade" class="level3">
+<h3 class="anchored" data-anchor-id="como-está-distribuído-o-nosso-público-por-idade">Como está distribuído o nosso público por idade?</h3>
+<p>Para respondermos essa pergunta, vamos recorrer a um visual muito utilizado para distribuição de dados de uma única variável: <strong>Histograma</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(clientes_unicos, <span class="fu">aes</span>(idade)) <span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Conseguimos notar, por exemplo, que a escolha dos intervalos (bins) ou largura do intervalo (binwidth) pode influenciar na observação dos dados. Por isso é muito importante ter isso em mente ao construir o gráfico.</p>
+<p>Podemos observar que grande parte da clientela está disposta entre 30 a 50 anos, com um número interessante também na faixa abaixo de 20 anos.</p>
+<p>Podemos estilizar o Histograma também para representar, por exemplo, os resultados com outras cores. Para isso temos 2 argumentos que podemos utilizar no elemento geométrico: <code>color</code> e <code>fill</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(clientes_unicos, <span class="fu">aes</span>(idade)) <span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">3</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">color =</span> <span class="st">"white"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ficou bem interessante o nosso visual, certo? Sinta-se livre para interpretar e colocar seus achados neste visual em relação ao perfil dos clientes.</p>
+</section>
+</section>
+<section id="distribuindo-dados-por-categoria" class="level2">
+<h2 class="anchored" data-anchor-id="distribuindo-dados-por-categoria">Distribuindo dados por categoria</h2>
+<p>Vamos evoluir um pouco mais na distribuição de dados. Fizemos por idade, mas agora vamos querer combinar com mais outras variáveis (região e sexo biológico) a fim de responder um de nossos questionamentos.</p>
+<p>Para isso, vamos precisar sair de um simples histograma para outro visual que também atende a distribuição de dados resumindo-o por meio de suas medidas estatísticas. Estamos falando do <strong>boxplot</strong>.</p>
+<p>O <strong>boxplot</strong> é uma representação visual que mostra a distribuição de dados quantitativos, facilitando comparações entre variáveis ou categorias.</p>
+<p><img src="imagens/outros/boxplot.png" class="img-fluid"></p>
+<p>Os elementos principais de um boxplot são:</p>
+<ul>
+<li><p><strong>Caixa:</strong> Representa o intervalo interquartil (IIQ), que vai do 1º quartil (Q1 - 25% dos dados) ao 3º quartil (Q3 - 75% dos dados).</p></li>
+<li><p><strong>Linha mediana:</strong> Onde está posicionado a mediana (Q2), valor que separa 50% dos dados.</p></li>
+<li><p><strong>Whiskers (“bigodes”):</strong> mostram a variabilidade fora do intervalo interquartil</p></li>
+<li><p><strong>Outliers:</strong> Pontos individuais que estão fora do alcance dos <em>whiskers</em>, indicados separadamente.</p></li>
+</ul>
+<p>Visto a estrutura de um boxplot, vamos partir para investigação de mais uma característica de nossos clientes:</p>
+<section id="como-está-distribuído-o-nosso-público-por-idade-e-região" class="level3">
+<h3 class="anchored" data-anchor-id="como-está-distribuído-o-nosso-público-por-idade-e-região">Como está distribuído o nosso público por idade e região?</h3>
+<p>Para respondermos essa pergunta, vamos construir um <strong>Boxplot</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(clientes_unicos) <span class="sc">+</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> regiao, <span class="at">x =</span> idade))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Conseguimos gerar alguns insights aqui neste visual. Podemos, por exemplo, notar uma distribuição de público mais jovem na Região Centro-Oeste.</p>
+<p>Uma outra curiosidade é a inserção de uma variável para segregação/divisão de dados, o argumento <code>fill</code> , desta vez dentro da camada <code>aes</code><strong>.</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(clientes_unicos) <span class="sc">+</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> regiao, <span class="at">x =</span> idade, <span class="at">fill =</span> regiao))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Não observamos nenhuma diferença a não ser na cor de cada boxplot e a legenda ao lado. Isto porque utilizamos a mesma variável para o eixo y e o fill. Para auxiliar na resposta ao questionamento, que tal adicionarmos no fill a variável <code>sexo_biologico?</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(clientes_unicos) <span class="sc">+</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> regiao, <span class="at">x =</span> idade, <span class="at">fill =</span> sexo_biologico))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Bem diferente, não é mesmo? Podemos ter alguns insights interessantes aqui. Por exemplo, lembra que citamos o Centro-Oeste com uma distribuição de público mais jovem? Então, com essa divisão pelo sexo ficou mais evidente a influência do resultado pela distribuição do público do sexo masculino na região.</p>
+<p>Tenha bastante cuidado nos recursos que adiciona o gráfico que possam deixá-lo de mais difícil interpretação. Esse gráfico mesmo não seria ideal para o público geral, tanto pela complexidade de um boxplot, quanto a quantidade de variáveis a se analisar.</p>
+</section>
+</section>
+<section id="compondo-dados" class="level2">
+<h2 class="anchored" data-anchor-id="compondo-dados">Compondo dados</h2>
+<p>Vamos partir para outro tipo de visual para responder a mais um questionamento</p>
+<section id="dos-clientes-que-participam-do-nosso-programa-de-cashback-qual-a-proporção-por-região-do-país" class="level3">
+<h3 class="anchored" data-anchor-id="dos-clientes-que-participam-do-nosso-programa-de-cashback-qual-a-proporção-por-região-do-país">Dos clientes que participam do nosso programa de cashback, qual a proporção por região do país?</h3>
+<p>Para responder essa pergunta podemos construir uma série de visuais. Vamos optar por um que é bem comum e que já criamos aqui neste documento: Gráfico de colunas.</p>
+<p>A diferença é que precisaremos filtrar os dados trazendo apenas os clientes que participam do programa de cashback. E, além disso, representar os dados como <strong>proporção</strong> (percentual). Mas vamos começar contando quantos clientes usam esse serviço</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>clientes_unicos <span class="sc">%&gt;%</span> <span class="fu">filter</span>(cashback <span class="sc">==</span> <span class="st">"Sim"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>regiao)) <span class="sc">+</span> </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Já trouxemos em valores absolutos a quantidade de clientes que usam o serviço de cashback. Agora vamos ajustar o gráfico para trazer em dados percentuais. Para isso utilizaremos na estética do <code>geom_bar</code> um cálculo estatístico que conta cada quantidade de clientes e divide pelo total. Usaremos a palavra reservada <code>count</code>para nos auxiliar.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>clientes_unicos <span class="sc">%&gt;%</span> <span class="fu">filter</span>(cashback <span class="sc">==</span> <span class="st">"Sim"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>regiao)) <span class="sc">+</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(<span class="dv">100</span> <span class="sc">*</span> count<span class="sc">/</span><span class="fu">sum</span>(count)))) <span class="sc">+</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Porcentagem"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Agora conseguimos representar os dados em escala percentual utilizando o <code>after_stat()</code>. Foi possível notar que as 3 principais regiões em nº de clientes são as regiões Sudeste, Nordeste e Sul. E, que tanto o Centro-Oeste, quanto o Norte possuem menos de 10% de representatividade nacional no programa de cashback.</p>
+</section>
+</section>
+</section>
+<section id="explorando-dados-das-vendas" class="level1">
+<h1>Explorando dados das vendas</h1>
+<p>Agora, vamos analisar os dados do histórico de vendas em 2023. Nesta parte, vamos focar em construir os visuais que serão refinados posteriormente para serem utilizados em relatórios ou apresentações as parte interessadas.</p>
+<section id="comparando-dados-e-ajustando-eixos" class="level2">
+<h2 class="anchored" data-anchor-id="comparando-dados-e-ajustando-eixos">Comparando dados e ajustando eixos</h2>
+<p>Para começar, vamos voltar aquele 1º gráfico que criamos no início do projeto. Os dados não estão organizados. Uma boa prática é ordená-los de acordo com o total de vendas.</p>
+<p>Relembrando, o questionamento é o seguinte:</p>
+<section id="qual-foi-o-faturamento-por-categoria-em-2023" class="level3">
+<h3 class="anchored" data-anchor-id="qual-foi-o-faturamento-por-categoria-em-2023">Qual foi o faturamento por categoria em 2023?</h3>
+<p>Vamos fazer uma pequena modificação do nosso visual, alterando a ordem das categorias de acordo com os valores de venda.</p>
+<blockquote class="blockquote">
+<p>Obs: Por padrão, a função <code>reorder()</code> ordena pela mediana dos dados.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(vendas, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(categoria, <span class="sc">-</span>total, <span class="at">FUN =</span> sum), <span class="at">y =</span> total)) <span class="sc">+</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Após ordenar os dados, o gráfico ficou bem mais interessante, dando essa sensação de progressão. As vendas com Tecnologia e Eletrodomésticos é bem maior que as outras categorias.</p>
+<p>Pensando em adicionar os valores por fora das colunas e tirando aquele espaço abaixo das barras dando uma sensação ques estão “flutuando”, vamos ajustar os limites do gráfico. Para isso utilizaremos as funções de escala do visual, no nosso caso, <code>scale_y_continuous()</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">5.2e6</span>))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Os nomes das categorias são relativamente curtos, mas e se adicionarmos mais categorias? E se os nomes fossem maiores?</p>
+<p>Para evitar essas situações podemos modificar a orientação do gráfico de coluna para barra. Uma forma simples de fazer isso em R, sem precisar mudar os valores de x e y, é por meio da função <code>coord_flip()</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">coord_flip</span>()</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Bem melhor para ler o nome das categorias, não é mesmo? A ordenação permaneceu e um ponto de atenção está em perceber que as alterações posteriores à função são invertidas, quando mexer em x as alterações serão no eixo vertical, e em y serão no eixo horizontal.</p>
+</section>
+</section>
+<section id="representando-dados-temporais" class="level2">
+<h2 class="anchored" data-anchor-id="representando-dados-temporais">Representando dados temporais</h2>
+<p>Continuando o nosso processo de construção de visuais, vamos explorar agora gráficos que representam dados temporais. Esse visual vai nos ajudar a responder o seguinte questionamento</p>
+<section id="qual-foi-o-desempenho-das-vendas-ao-longo-dos-meses-em-2023" class="level3">
+<h3 class="anchored" data-anchor-id="qual-foi-o-desempenho-das-vendas-ao-longo-dos-meses-em-2023">Qual foi o desempenho das vendas ao longo dos meses em 2023?</h3>
+<p>Lembra que nossos dados são por compra e que a representação da data é diária? Então, vamos precisar ler de alguma forma os meses de cada compra e agregar esse dado por mês. Vamos começar então gerando a coluna <code>mes</code> que extrai esses dados</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>vendas <span class="ot">&lt;-</span> vendas <span class="sc">%&gt;%</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mes =</span> <span class="fu">format</span>(data, <span class="st">"%m"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Com a coluna dos meses criada, vamos construir um gráfico adequado para dados temporais com um número razoável de períodos: <strong>Gráfico de Linha</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vendas, <span class="fu">aes</span>(<span class="at">x =</span> mes, <span class="at">y =</span> total)) <span class="sc">+</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Opa! Tem algo estranho no nosso gráfico. Isso porque ele está tentando ligar os pontos de todas as vendas em cada mês gerando diferentes linhas verticais que, é bem verdade, não nos informa nada!</p>
+<p>Precisamos agrupar as vendas mês a mês, somando os valores de cada mês.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>vendas_por_mes <span class="ot">&lt;-</span> vendas <span class="sc">%&gt;%</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(mes) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">vendas_por_mes =</span> <span class="fu">sum</span>(total))</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>vendas_por_mes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 2
+   mes   vendas_por_mes
+   &lt;chr&gt;          &lt;dbl&gt;
+ 1 01           303681.
+ 2 02           231224.
+ 3 03           281818.
+ 4 04           286374.
+ 5 05           841254.
+ 6 06           781481.
+ 7 07           427311.
+ 8 08          1006685.
+ 9 09           419898.
+10 10           814186.
+11 11          1414809.
+12 12          1945770.</code></pre>
+</div>
+</div>
+<p>Agora sim! Com os dados dos meses agrupados vamos partir para nosso gráfico de linha. Para que possamos ligar os pontos, levando em conta que a variável x é temporal e/ou categórica, precisamos adicionar o código <code>group=1</code> em aes, para que entenda que todos os dados pertencem ao mesmo grupo.</p>
+<p>Outro ponto de atenção também está nos ajustes do eixo y, evitando más interpretações do dado. É importante partir do 0!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vendas_por_mes, <span class="fu">aes</span>(<span class="at">x =</span> mes, <span class="at">y =</span> vendas_por_mes, <span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="fl">2e6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Nosso gráfico finalmente saiu do papel! Podemos notar comportamentos interessantes como, por exemplo, um salto de vendas no último tri.</p>
+<p>O gráfico está bem simples. Que tal a gente modificar um pouco a nossa linha? Adicionar uma cor, ajustar tamanho, etc.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vendas_por_mes, <span class="fu">aes</span>(<span class="at">x =</span> mes, <span class="at">y =</span> vendas_por_mes, <span class="at">group=</span><span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="fl">2e6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Parece interessante! Mas que tal a gente dar um foco nos pontos desse gráfico. Para isso vamos precisar adicionar um novo <code>geom</code> aqui. Vamos aprender como fazer?</p>
+</section>
+</section>
+<section id="combinando-visuais" class="level2">
+<h2 class="anchored" data-anchor-id="combinando-visuais">Combinando visuais</h2>
+<p>Já construímos o gráfico de linha do desempenho das vendas ao longo de 2023. Agora, faz bastante sentido a gente evidenciar os pontos que combinam os meses e os valores. Isso nos dá uma noção de onde estamos e para onde fomos.</p>
+<p>Para isso, basta a gente adicionar um <code>geom_point</code> junto ao nosso visual que construímos.</p>
+<blockquote class="blockquote">
+<p><strong>Atenção:</strong> A ordem dos “geoms” importa. Ou seja, cuidado a combiná-los evitando sobreposições.</p>
+</blockquote>
+<p>Vamos adicionar alguns recursos visuais em nosso <code>geom_point</code> como tamanho, cor, forma, etc.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vendas_por_mes, <span class="fu">aes</span>(<span class="at">x =</span> mes, <span class="at">y =</span> vendas_por_mes, <span class="at">group=</span><span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">shape =</span> <span class="st">"diamond"</span>) <span class="sc">+</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="fl">2e6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Legal! Nosso visual está ficando muito bom. Vamos mexer mais nele mais para frente, quando estivermos na etapa de personalização dos visuais.</p>
+</section>
+<section id="agrupando-e-empilhando-dados" class="level2">
+<h2 class="anchored" data-anchor-id="agrupando-e-empilhando-dados">Agrupando e empilhando dados</h2>
+<p>Aprendemos a representar dados categóricos, numéricos e temporais. Mas e a combinação destes? É isso que faremos aqui ao responder mais um questionamento:</p>
+<section id="como-está-dividida-a-venda-por-trimestre-por-método-de-pagamento-o-método-pix-tem-tido-boa-adesão" class="level3">
+<h3 class="anchored" data-anchor-id="como-está-dividida-a-venda-por-trimestre-por-método-de-pagamento-o-método-pix-tem-tido-boa-adesão">Como está dividida a venda por trimestre por método de pagamento? O método PIX tem tido boa adesão?</h3>
+<p>Como você pode notar, temos 3 variáveis a considerar aqui: o tempo (em trimestre), o valor das vendas e o método de pagamento.</p>
+<p>Podemos começar tratando a variável temporal. Como não temos os dados do trimestre, vamos criar uma nova coluna com esse dado, utilizando o pacote <code>lubridate</code> para extrair os trimestres pela data da compra e já transformado para factor para facilitar na hora de construir o gráfico.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>vendas <span class="ot">&lt;-</span> vendas <span class="sc">%&gt;%</span> </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">trimestre =</span> <span class="fu">as.factor</span>(<span class="fu">quarter</span>(data)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Após a criação da coluna, vamos agrupar os dados pelo trimestre e método de pagamento, somando as vendas.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>vendas_por_tri <span class="ot">&lt;-</span> vendas <span class="sc">%&gt;%</span> </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(trimestre, metodo_pagamento) <span class="sc">%&gt;%</span> </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">total_tri =</span> <span class="fu">sum</span>(total))</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>vendas_por_tri</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 3
+# Groups:   trimestre [4]
+   trimestre metodo_pagamento total_tri
+   &lt;fct&gt;     &lt;fct&gt;                &lt;dbl&gt;
+ 1 1         Boleto             176995.
+ 2 1         Crédito            287167.
+ 3 1         PIX                352561.
+ 4 2         Boleto             344944.
+ 5 2         Crédito            874828.
+ 6 2         PIX                689336.
+ 7 3         Boleto             245148.
+ 8 3         Crédito            941988.
+ 9 3         PIX                666757.
+10 4         Boleto             722404.
+11 4         Crédito           1937027.
+12 4         PIX               1515335.</code></pre>
+</div>
+</div>
+<p>Agora, vamos construir o gráfico para representar a combinação dessas informações. Para responder o nosso questionamento podemos utilizar um <strong>Gráfico de Colunas Empilhadas ou Agrupadas</strong>. Vamos ver a diferença entre elas? Para segregar os dados pelo método de pagamento vamos recorrer ao elemento <code>fill</code> do aes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vendas_por_tri, <span class="fu">aes</span>(trimestre, total_tri, <span class="at">fill =</span> metodo_pagamento)) <span class="sc">+</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Conseguimos notar a diferença entre colunas empilhadas e agrupadas:</p>
+<ul>
+<li><p><strong>Colunas empilhadas:</strong> representa a composição dos dados de cada coluna e favorece a comparação entre colunas (dados absolutos)</p></li>
+<li><p><strong>Colunas agrupadas:</strong> representa a composição dos dados como um grupo de colunas e favorece a comparação em cada coluna</p></li>
+</ul>
+<p>Criamos o nosso visual, mas podemos fazer algumas estilizações que melhore a percepção dos dados. A escolha de cores é um fator importante. Muitas vezes elas determinam o que aquele dado representa e, do modo que está o nosso, a combinação de cores vermelhas, verdes e azuis não faz muito sentido.</p>
+<p>Por isso, podemos fazer uso das paletas de cores no R para, por exemplo, demonstrar que os dados tem certa relação. Vamos então, primeiro, usar uma paleta pré-definida a <code>Blues</code> chamando-a por meio do <code>scale_fill_brewer()</code> .</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vendas_por_tri, <span class="fu">aes</span>(trimestre, total_tri, <span class="at">fill =</span> metodo_pagamento)) <span class="sc">+</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Blues"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ficou bem melhor, né? Agora os dados dão uma sensação de pertencimento ao mesmo grupo. Mas, nós podemos também definir as cores do nosso visual manualmente. Essa 1ª cor azul por exemplo está muito clara para o fundo do gráfico. Vamos criar um vetor com as cores que desejamos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>cores <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"lightskyblue1"</span>,<span class="st">"steelblue"</span>,<span class="st">"dodgerblue4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Depois de definir o vetor das cores vamos mudar a função da definição de cores para <code>scale_fill_manual()</code> .</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(vendas_por_tri, <span class="fu">aes</span>(trimestre, total_tri, <span class="at">fill =</span> metodo_pagamento)) <span class="sc">+</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cores)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Deu outra cara para o nosso visual! Temos um gráfico muito bem feito e que ilustra a resposta àquela pergunta com mais propriedade. Por exemplo, tivemos um aumento das vendas por PIX ao longo dos trimestres, embora apenas no 1º Tri eles foram em maioria em relação às compras por Cartão de Crédito.</p>
+</section>
+</section>
+</section>
+<section id="personalizando-os-visuais" class="level1">
+<h1>Personalizando os visuais</h1>
+<p>Agora temos os 3 visuais que nos auxiliarão na análise explanatória das vendas da Zoop em 2023. Relembrando o que fizemos até o momento, utilizamos os gráficos inicialmente como ferramentas para a análise exploratória dos clientes da Zoop gerando bons insights. Depois, começamos a construção dos visuais que serão utilizados para a apresentação ao público mais gerencial, ou seja, precisamos informar de maneira breve e clara o que aquele gráfico apresenta.</p>
+<p>Para isso, vamos começar com uma parte bem importante para a construção de visuais informativos: definição da identidade visual dos gráficos e elementos.</p>
+<section id="definindo-o-tema-dos-visuais" class="level2">
+<h2 class="anchored" data-anchor-id="definindo-o-tema-dos-visuais">Definindo o tema dos visuais</h2>
+<p>Primeiro passamos a paleta de cores da Zoop para que possamos alterar os visuais ao longo do processo</p>
+<section id="paleta-de-cores-da-zoop" class="level3">
+<h3 class="anchored" data-anchor-id="paleta-de-cores-da-zoop">Paleta de cores da Zoop</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>red_1</th>
+<th>red_2</th>
+<th>red_3</th>
+<th>grey_1</th>
+<th>grey_2</th>
+<th>grey_3</th>
+<th>blue_1</th>
+<th>blue_2</th>
+<th>blue_3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>#ee8399</td>
+<td>#e23155</td>
+<td>#881d33</td>
+<td>#f3f3f3</td>
+<td>#ebebeb</td>
+<td>#8d8d8d</td>
+<td>#a3adbd</td>
+<td>#5e708c</td>
+<td>#19325b</td>
+</tr>
+<tr class="even">
+<td><img src="imagens/paleta_cores/RED_1.png" class="img-fluid"></td>
+<td><img src="imagens/paleta_cores/RED_2.png" class="img-fluid"></td>
+<td><img src="imagens/paleta_cores/RED_3.png" class="img-fluid"></td>
+<td><img src="imagens/paleta_cores/GREY_1.png" class="img-fluid"></td>
+<td><img src="imagens/paleta_cores/GREY_2.png" class="img-fluid"></td>
+<td><img src="imagens/paleta_cores/GREY_3.png" class="img-fluid"></td>
+<td><img src="imagens/paleta_cores/BLUE_1.png" class="img-fluid"></td>
+<td><img src="imagens/paleta_cores/BLUE_2.png" class="img-fluid"></td>
+<td><img src="imagens/paleta_cores/BLUE_3.png" class="img-fluid"></td>
+</tr>
+</tbody>
+</table>
+<p>O código abaixo salva os valores hexadecimais das cores em cada variável com o código da cor</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>nomes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"red_1"</span>, <span class="st">"red_2"</span>, <span class="st">"red_3"</span>, <span class="st">"grey_1"</span>, <span class="st">"grey_2"</span>,</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>           <span class="st">"grey_3"</span>, <span class="st">"blue_1"</span>, <span class="st">"blue_2"</span>, <span class="st">"blue_3"</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>cores <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#ee8399"</span>, <span class="st">"#e23155"</span>, <span class="st">"#881d33"</span>, <span class="st">"#f3f3f3"</span>, <span class="st">"#ebebeb"</span>, </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>           <span class="st">"#8d8d8d"</span>, <span class="st">"#a3adbd"</span>, <span class="st">"#5e708c"</span>, <span class="st">"#19325b"</span>)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(nomes)) <span class="fu">assign</span>(nomes[i],cores[i])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Agora que sabemos as cores dos visuais, vamos atualizar os visuais com as cores que se encaixam na identidade visual da Zoop</p>
+</section>
+<section id="temas" class="level3">
+<h3 class="anchored" data-anchor-id="temas">Temas</h3>
+<p>Vamos observar como podemos utilizar os temas em nosso projeto com ggplot2. Para isso, iniciaremos trazendo o nosso visual do gráfico de <strong>vendas por mês</strong> para observar o que acontece.</p>
+<p>A única atualização em relação ao código que fizemos foi a inserção de uma das cores que estão na paleta da Zoop nos parâmetros <code>color</code> dos geoms.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_mes <span class="ot">&lt;-</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(vendas_por_mes, <span class="fu">aes</span>(<span class="at">x =</span> mes, <span class="at">y =</span> vendas_por_mes, <span class="at">group=</span><span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">color =</span> blue_2, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> blue_2, <span class="at">shape =</span> <span class="st">"diamond"</span>) <span class="sc">+</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="fl">2e6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Vamos começar explorando os temas básicos pré-definidos do ggplot2: <code>theme_bw()</code> , <code>theme_classic()</code>, <code>theme_minimal()</code>, entre outros</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_mes <span class="sc">+</span> <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Esses temas são largamente utilizados para diferentes situações. O <code>theme_minimal()</code> parece interessante para o que queremos.</p>
+<p>É possível você estilizar do zero seu próprio tema, assim como usar um desses como base. Para ambos os casos podemos utilizar o elemento gramatical <code>theme()</code> . Vamos criar nosso tema?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>tema <span class="ot">&lt;-</span> <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">14</span>, <span class="at">face=</span><span class="st">"bold"</span>, <span class="at">vjust =</span> <span class="sc">+</span><span class="dv">3</span>),</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>),</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">vjust =</span> <span class="sc">+</span><span class="dv">3</span>),</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"bottom"</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>        )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Rodando o código acima, nós criamos o nosso próprio tema alterando alguns elementos do visual. Vamos observar como nosso gráfico de vendas por mês ficou?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_mes <span class="sc">+</span> tema <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Vendas por mês"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Está ficando bem interessante o nosso visual! Mas ainda não está pronto. Podemos, por exemplo, mudar os títulos dos eixos e até mesmo como os valores estão apresentados. E é isso que veremos a seguir.</p>
+</section>
+</section>
+<section id="ajustando-rótulos-e-labels" class="level2">
+<h2 class="anchored" data-anchor-id="ajustando-rótulos-e-labels">Ajustando rótulos e labels</h2>
+<p>Vamos continuar a estilização de nosso gráfico de vendas por mês. Pensando nisso ajustaremos o título dos eixos e do gráfico a partir da função <code>labs()</code> .</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_mes <span class="ot">&lt;-</span> grafico_vendas_mes <span class="sc">+</span> </span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  tema <span class="sc">+</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Vendas por mês da Zoop (2023)"</span>,</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Mês"</span>,</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Total de Vendas (R$)"</span>)</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>grafico_vendas_mes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Pronto! Já está bem legal o nosso gráfico. Porém temos alguns pontos de atenção aqui ainda. Por exemplo, os valores de total de vendas com os números sem separação de milhar ficam um pouco difíceis de interpretar e, além disso, podemos mudar os meses de números para seu nome abreviado.</p>
+<p>Vamos salvar um vetor com os nomes abreviados dos meses em português para ajustar o gráfico.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>meses <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Jan"</span>, <span class="st">"Fev"</span>, <span class="st">"Mar"</span>, <span class="st">"Abr"</span>, <span class="st">"Mai"</span>, <span class="st">"Jun"</span>, </span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Jul"</span>, <span class="st">"Ago"</span>, <span class="st">"Set"</span>, <span class="st">"Out"</span>, <span class="st">"Nov"</span>, <span class="st">"Dez"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Agora, vamos alterar os valores dos eixos da variável temporal (<code>mes</code>) para o nome abreviado e da numérica (<code>vendas_por_mes</code>) para um formato resumido do valor (em milhões e milhares).</p>
+<p>Para os meses, utilizaremos o <code>scale_x_discrete()</code> e para os valores de venda, o <code>scale_y_continuous()</code> combinado com a função <code>label_number()</code> do pacote <strong>scales</strong> que formata números de uma forma mais amigável e a função <code>cut_short_scale()</code> também do <strong>scales</strong> que reduz os números pela sua ordem de grandeza (K = mil , M= milhão, B = bilhão, etc.).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_mes <span class="ot">&lt;-</span> grafico_vendas_mes <span class="sc">+</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> meses) <span class="sc">+</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">prefix =</span> <span class="st">"R$ "</span>,</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">scale_cut =</span> <span class="fu">cut_short_scale</span>()))</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>grafico_vendas_mes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ficou bem melhor, não é mesmo? Reduzimos bastante os distratores do visual e mantivemos apenas o necessário. A leitura dos números de vendas e dos meses ficou mais fluida.</p>
+</section>
+<section id="adicionando-labels-no-visual" class="level2">
+<h2 class="anchored" data-anchor-id="adicionando-labels-no-visual">Adicionando labels no visual</h2>
+<p>Já aprendemos a ajustar os títulos dos rótulos e gráfico e também os valores dos eixos. Mas isso não é tudo! Temos bastantes coisas para explorar nos visuais que ainda não concluímos. Vamos continuar então com o gráfico de <strong>Vendas por categoria</strong></p>
+<p>A atualização que fizemos foi a inserção de uma das cores que estão na paleta da Zoop nos parâmetros <code>fill</code> do <code>geom_col()</code> , a inserção do tema e a criação do título do gráfico.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_categoria <span class="ot">&lt;-</span> </span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(vendas, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(categoria, <span class="sc">-</span>total, <span class="at">FUN =</span> sum), <span class="at">y =</span> total)) <span class="sc">+</span> </span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> red_2) <span class="sc">+</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">5.2e6</span>)) <span class="sc">+</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    tema <span class="sc">+</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Vendas por categoria da Zoop (2023)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Vamos ver como ficou nosso gráfico com esses pequenos ajustes?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_categoria</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-45-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ele já está bem interessante, porém podemos fazer alguns ajustes. Como possuímos um gráfico de colunas com apenas 6 colunas, é mais interessante trazermos os valores para junto das barras tirando a necessidade de termos os valores das escalas no eixo X.</p>
+<p>Faremos isso utilizando o <code>geom_label()</code> . Para conseguirmos agregar os valores das vendas de cada barra, vamos precisar usar a função <code>after_stat()</code> fazendo um resumo dos dados (<code>"summary"</code>) com a função soma (<code>"sum"</code>). Mas alguns pequenos ajustes para exibição e temos o gráfico abaixo:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_categoria <span class="ot">&lt;-</span> grafico_vendas_categoria <span class="sc">+</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_label</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">number</span>(<span class="fu">after_stat</span>(y),</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">prefix =</span> <span class="st">"R$ "</span>,</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">scale_cut =</span> <span class="fu">cut_si</span>(<span class="st">""</span>))),  </span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">stat =</span> <span class="st">'summary'</span>, <span class="at">fun =</span> <span class="st">"sum"</span>, <span class="at">hjust=</span><span class="sc">-</span><span class="fl">0.05</span>)</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>grafico_vendas_categoria</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Finalmente temos os valores nas barras, ou seja, podemos retirar o eixo x do nosso gráfico que a interpretação não será impactada. Além disso, sabemos pelo tipo que o eixo Y é das categorias, podemos então retirar o título desse eixo também. Podemos fazer essas alterações com o seguinte código:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_categoria <span class="ot">&lt;-</span> </span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  grafico_vendas_categoria <span class="sc">+</span> </span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>())</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>grafico_vendas_categoria</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Outro gráfico não é mesmo? Mantivemos apenas o necessário nesse visual com os valores juntos as barras o que facilita a leitura dos nossos usuários. Mas ainda não acabou, temos mais um visual que precisa ser ajustado para concluirmos o nosso projeto.</p>
+</section>
+</section>
+<section id="concluindo-o-projeto" class="level1">
+<h1>Concluindo o projeto</h1>
+<p>Vamos partir para o refinamento do nosso último visual: <strong>Vendas por trimestre e método de pagamento.</strong></p>
+<p>Aprendemos a ajustar os valores e títulos e até a inserir valores nas barras. O que podemos fazer agora?</p>
+<section id="adicionando-anotações-no-visual" class="level2">
+<h2 class="anchored" data-anchor-id="adicionando-anotações-no-visual">Adicionando anotações no visual</h2>
+<p>Agora, nós vamos aprender a inserir anotações que podem facilitar a interpretação do gráfico ou até focar a atenção das partes interessadas no que queremos apresentar com o gráfico. Mas, primeiro, vamos ajustar as cores do visual seguindo a paleta de cores da Zoop</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>cores <span class="ot">&lt;-</span> <span class="fu">c</span>(blue_1, blue_2, blue_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Com as cores definidas vamos observar o nosso gráfico. Os únicos ajustes no código foram a inserção do tema que definimos anteriormente e a atualização de cores.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_pag <span class="ot">&lt;-</span> </span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(vendas_por_tri, <span class="fu">aes</span>(trimestre, total_tri, <span class="at">fill =</span> metodo_pagamento)) <span class="sc">+</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cores) <span class="sc">+</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  tema</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>grafico_vendas_pag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Vamos ajustar o nosso visual aos poucos. Começando pela edição dos textos dos títulos e legenda.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_pag <span class="ot">&lt;-</span> grafico_vendas_pag <span class="sc">+</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Vendas trimestrais da Zoop por método de pagamento"</span>,</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Total de vendas"</span>, <span class="at">fill =</span> <span class="st">"Método de Pagamento"</span>)</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>grafico_vendas_pag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Agora, vamos ajustar os valores dos eixos X e Y, para facilitar a leitura dos dados.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_pag <span class="ot">&lt;-</span> grafico_vendas_pag <span class="sc">+</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"1º Tri"</span>, <span class="st">"2º Tri"</span>, <span class="st">"3º Tri"</span>, <span class="st">"4º Tri"</span>)) <span class="sc">+</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">prefix =</span> <span class="st">"R$"</span>,</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">scale_cut =</span> <span class="fu">cut_short_scale</span>()))</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>grafico_vendas_pag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-51-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Depois de todos os ajustes que realizamos, vamos agora observar como criar anotações em nossos visuais. Utilizaremos a função <code>annotate()</code> para isso. Nela passamos o tipo de anotação que queremos aplicar (<code>"text"</code>, <code>"curve"</code>, etc.), as coordenadas de inserção da anotação (<code>x</code>, <code>y</code>, <code>xend</code>, <code>yend</code>), textos e outros elementos.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_pag <span class="ot">&lt;-</span> grafico_vendas_pag <span class="sc">+</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>,</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">x =</span> <span class="dv">1</span> ,</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> <span class="fl">1.5e6</span> ,</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">label =</span> <span class="st">"As vendas por PIX superaram</span><span class="sc">\n</span><span class="st">as de crédito apenas no 1º Tri"</span>,</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"curve"</span>,</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">x =</span> <span class="dv">1</span>,</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> <span class="fl">1.25e6</span>,</span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">xend =</span> <span class="fl">1.1</span>,</span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">yend =</span> <span class="fl">400e3</span>,</span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="dv">2</span>, <span class="st">"mm"</span>)))</span>
+<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a>grafico_vendas_pag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Olha só que legal! Conseguimos inserir um texto que ajuda na interpretação de nossos dados no visual e de quebra conseguimos, a partir dele, focar a atenção do público ao ponto do gráfico que queremos destacar.</p>
+</section>
+<section id="salvando-os-visuais" class="level2">
+<h2 class="anchored" data-anchor-id="salvando-os-visuais">Salvando os visuais</h2>
+<p>Agora que concluímos o refinamento dos nossos visuais do histórico de vendas, vamos juntar tudo que fizemos até aqui e compilar alguns insights e salvar os nossos visuais para uso em relatórios ou apresentações ao público geral.</p>
+<section id="perfil-dosas-clientes" class="level3">
+<h3 class="anchored" data-anchor-id="perfil-dosas-clientes">Perfil dos(as) clientes</h3>
+<p>Com a nossa análise exploratória dos dados dos clientes conseguimos realizar algumas interpretações bem interessantes. Vamos deixar um pequeno resumo sobre o que conseguimos observar:</p>
+<ul>
+<li><p>Grande parte dos clientes estão concentrados entre 30 e 50 anos, ou seja, um público majoritariamente da Geração Y ou Millenial.</p></li>
+<li><p>Distribuição de público mais jovem na Região Centro-Oeste, decorrente de um público do sexo masculino com maior distribuição na faixa entre 29 e 43 anos.</p></li>
+<li><p>Comparando as 5 regiões do Brasil, a distribuição de clientes do sexo biológico feminino só é ultrapassada de acordo à idade dos clientes na Região Nordeste.</p></li>
+<li><p>As 3 principais regiões em nº de clientes que participam do programa de cahsback da Zoop são as regiões Sudeste, Nordeste e Sul.</p></li>
+<li><p>As regiões Centro-Oeste e Norte possuem menos de 10% da representatividade nacional no programa de cashback.</p></li>
+</ul>
+</section>
+<section id="histórico-das-vendas" class="level3">
+<h3 class="anchored" data-anchor-id="histórico-das-vendas">Histórico das vendas</h3>
+<p>Agora, vamos para um resumo do gistórico de vendas, trazendo a versão final dos nossos gráficos e algumas interpretações:</p>
+<section id="qual-foi-o-desempenho-das-vendas-ao-longo-dos-meses-em-2023-1" class="level4">
+<h4 class="anchored" data-anchor-id="qual-foi-o-desempenho-das-vendas-ao-longo-dos-meses-em-2023-1"><strong>Qual foi o desempenho das vendas ao longo dos meses em 2023?</strong></h4>
+<p>Conseguimos notar um forte desempenho no 4º Tri o que pode ser explicado pela época de grandes eventos e feriados como: Dia das crianças, Black Friday, Natal e Ano Novo. Outro fator curioso é o grande volume de vendas (acima de 1 Milhão) nessa amostra da base no mês de Agosto, o que vale a pena conferir que campanhas, promoções ou ações podem ter corroborado para este resultado.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_mes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-53-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="qual-foi-o-faturamento-por-categoria-em-2023-1" class="level4">
+<h4 class="anchored" data-anchor-id="qual-foi-o-faturamento-por-categoria-em-2023-1"><strong>Qual foi o faturamento por categoria em 2023?</strong></h4>
+<p>Conseguimos notar que as vendas com Tecnologia e Eletrodomésticos estão bem maiores que as das outras categorias. Isso pode ser provavelmente explicado por 2 vertentes:</p>
+<ol type="1">
+<li>O preço dos produtos são maiores, o que impulsionam os valores apresentados, mesmo que houvessem menos unidades de produtos vendidos</li>
+<li>O perfil do público talvez possa explicar essa disparidade, o que cabe maiores investigações</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_categoria</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-54-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="como-esta-dividida-a-venda-por-trimestre-por-método-de-pagamento-o-método-pix-tem-tido-boa-adesão" class="level4">
+<h4 class="anchored" data-anchor-id="como-esta-dividida-a-venda-por-trimestre-por-método-de-pagamento-o-método-pix-tem-tido-boa-adesão"><strong>Como esta dividida a venda por trimestre por método de pagamento? O método PIX tem tido boa adesão?</strong></h4>
+<p>Com o visual abaixo conseguimos notar, por exemplo, que tivemos um aumento das vendas por PIX ao longo dos trimestres, embora apenas no 1º Tri elas foram em maioria em relação as compras por Cartão de Crédito.</p>
+<p>Com esse gráfico também podemos notar aquele comportamento que vimos nas vendas por mês, só que desta vez agrupado por trimestre. Fica evidente o grande volume de vendas no 3º Tri e o baixo desempenho no 1º Tri.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>grafico_vendas_pag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Projeto_Final_Dataviz_R_files/figure-html/unnamed-chunk-55-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Com as interpretações dos visuais que construímos ao longo do projeto, vamos partir para última etapa que é a de exportação dos visuais. Vamos utilizar a função <code>ggsave()</code> para salvá-los, passando os mesmos parâmetros de tamanho e qualidade para manter o padrão dos visuais.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"imagens/grafico_vendas_mes.png"</span>, grafico_vendas_mes, </span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">height =</span> <span class="dv">5</span>, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">dpi=</span><span class="dv">300</span>)</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"imagens/grafico_vendas_categoria.png"</span>, grafico_vendas_categoria, </span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">height =</span> <span class="dv">5</span>, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">dpi=</span><span class="dv">300</span>)</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"imagens/grafico_vendas_pag.png"</span>, grafico_vendas_pag, </span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">height =</span> <span class="dv">5</span>, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">dpi=</span><span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Agora é a sua vez! Que tal baixar os gráficos e gerar um relatório trazendo alguns insights e explicando os resultados?</p>
+<p>Espero que tenha curtido até aqui e faça bom proveito do conteúdo!</p>
+</section>
+</section>
+</section>
+<section id="referências" class="level2">
+<h2 class="anchored" data-anchor-id="referências">Referências</h2>
+<ul>
+<li><p>Documentação do tidyverse (em inglês). Disponível em: <a href="https://tidyverse.tidyverse.org/" class="uri">https://tidyverse.tidyverse.org/</a></p></li>
+<li><p>Documentação do ggplot (em inglês). Disponível em: <a href="https://ggplot2.tidyverse.org/reference/labs.html" class="uri">https://ggplot2.tidyverse.org/reference/labs.html</a></p></li>
+<li><p>Visualização de Dados com ggplot2: cheatsheet.Disponível em: <a href="https://rstudio.github.io/cheatsheets/translations/portuguese/data-visualization_pt.pdf" class="uri">https://rstudio.github.io/cheatsheets/translations/portuguese/data-visualization_pt.pdf</a></p></li>
+<li><p>R for Data Science (2e) (em inglês). Disponível em: <a href="https://r4ds.hadley.nz/">https://r4ds.hadley.nz</a></p></li>
+<li><p>Ciência de Dados em R. Disponível em: <a href="https://livro.curso-r.com/index.html" class="uri">https://livro.curso-r.com/index.html</a></p></li>
+<li><p>Um Tutorial de ggplot2 para gráficos agradáveis em R (em inglês). <a href="https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#text" class="uri">https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#text</a></p></li>
+</ul>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

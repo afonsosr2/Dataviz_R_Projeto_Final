@@ -141,7 +141,7 @@ Já exploramos um pouco das duas bases do projeto e ajustamos os dados para faci
 O pacote **ggplot2** trabalha com a criação de visualização de dados em camadas. Ou seja, para construir um gráfico, nós precisamos montá-los aos poucos adicionando os recursos camada por camada. Ao todo, o ggplot2 possui uma série de elementos gramaticais que constituem as camadas e recursos de um visual:
 
 | Elemento    | Descrição                                                       |
-|---------------------|---------------------------------------------------|
+|------------------|------------------------------------------------------|
 | data        | Os dados que serão utilizados para a construção do visual       |
 | aesthetics  | A dimensão visual dos dados (coordenadas e elementos estéticos) |
 | geometries  | Os elementos visuais utilizados a partir dos dados              |
@@ -297,7 +297,7 @@ Para responder essa pergunta podemos construir uma série de visuais. Vamos opta
 
 A diferença é que precisaremos filtrar os dados trazendo apenas os clientes que participam do programa de cashback. E, além disso, representar os dados como **proporção** (percentual). Mas vamos começar contando quantos clientes usam esse serviço
 
-```{r }
+```{r}
 clientes_unicos %>% filter(cashback == "Sim") %>% 
   ggplot(aes(x=regiao)) + 
   geom_bar()
@@ -787,3 +787,17 @@ ggsave("imagens/grafico_vendas_pag.png", grafico_vendas_pag,
 Agora é a sua vez! Que tal baixar os gráficos e gerar um relatório trazendo alguns insights e explicando os resultados?
 
 Espero que tenha curtido até aqui e faça bom proveito do conteúdo!
+
+## Referências
+
+-   Documentação do tidyverse (em inglês). Disponível em: <https://tidyverse.tidyverse.org/>
+
+-   Documentação do ggplot (em inglês). Disponível em: <https://ggplot2.tidyverse.org/reference/labs.html>
+
+-   Visualização de Dados com ggplot2: cheatsheet.Disponível em: <https://rstudio.github.io/cheatsheets/translations/portuguese/data-visualization_pt.pdf>
+
+-   R for Data Science (2e) (em inglês). Disponível em: [https://r4ds.hadley.nz](https://r4ds.hadley.nz/)
+
+-   Ciência de Dados em R. Disponível em: <https://livro.curso-r.com/index.html>
+
+-   Um Tutorial de ggplot2 para gráficos agradáveis em R (em inglês). <https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#text>

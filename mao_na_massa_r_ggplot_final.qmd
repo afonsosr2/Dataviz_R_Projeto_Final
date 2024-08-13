@@ -1,0 +1,443 @@
+---
+title: "Mão na massa: Aplicando Data Visualization com ggplot2"
+format: html
+editor: visual
+---
+
+## Sobre o documento
+
+Aproveite esse espaço para as atividades Mão na Massa do curso de **R: Aplicando Data Visualization com ggplot2** da Alura. Aqui você pode escrever e testar os códigos dos diversos desafios envolvendo os aprendizados de cada aula.
+
+Este arquivo Quarto foi construído com espaço para as células das atividades propostas no curso, com ele você tem espaço para construir e executar suas soluções
+
+Além desse documento, vamos trabalhar com os arquivos CSV das bases de clientes e vendas da Zoop assim como nos vídeos do nosso curso. Essas bases estão na pasta `dados` do projeto. Lembrando que este Quarto precisa estar na pasta raiz do projeto para a execução dos códigos base que deixaremos logo abaixo.
+
+## Pacotes do projeto
+
+```{r label: load-packages, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(lubridate)
+library(scales)
+```
+
+# Aula 01 - Conhecendo os dados
+
+Vamos iniciar o nosso processo de obtenção de arquivos extraindo os dados dos arquivos `.csv`que foram compartilhados conosco. Com o caminho das bases, passaremos cada uma para uma variável e por fim, agruparemos os dados em um única DataFrame pelo ID da compra para facilitar nossas análises.
+
+```{r}
+url_vendas = "dados/zoop_vendas.csv" 
+url_clientes = "dados/zoop_clientes.csv"
+
+vendas_desafio <- read_csv(url_vendas, show_col_types = FALSE)
+clientes_desafio <- read_csv(url_clientes, show_col_types = FALSE)
+
+dados_completos <- merge(vendas_desafio,clientes_desafio,by="ID_compra")
+head(dados_completos)
+```
+
+## Tratando os dados
+
+Alterando dados de `chr`para `factor`
+
+```{r}
+dados_completos <- dados_completos %>% 
+  mutate_if(is.character, as.factor)
+str(dados_completos)
+```
+
+Gerando uma coluna de total
+
+```{r}
+dados_completos <- dados_completos %>% 
+  mutate(total = preco_unitario * quantidade + frete)
+```
+
+## Gerando o visual
+
+> Qual o faturamento das vendas por região do Brasil em 2023?
+
+```{r}
+ggplot(dados_completos, aes(x = regiao, y = total)) +
+  geom_col()
+```
+
+# Aula 02 - Explorando dados dos clientes
+
+## Gerando 1º visual
+
+> Qual a distribuição das avaliações dos clientes nas compras do e-commerce da Zoop?
+
+::: {.callout-tip appearance="simple"}
+Cada compra é diferente, portanto não é necessário filtrar para clientes únicos.
+:::
+
+```{r}
+ggplot(dados_completos, aes(avaliacao_compra)) +
+  geom_histogram(bins = 10, fill = "steelblue", color = "white")
+```
+
+::: callout-note
+## Insights
+
+Escreva aqui o que conseguiu interpretar com esse visual...
+:::
+
+## Gerando 2º visual
+
+> Qual a distribuição das avaliações dos clientes da Zoop por estado na Região Nordeste?
+
+```{r}
+dados_completos %>% filter(regiao == "Centro-Oeste") %>% 
+  ggplot() +
+  geom_boxplot(aes(x = idade, y = uf, fill = regiao), 
+               fill = "steelblue")
+```
+
+::: callout-note
+## Insights
+
+Escreva aqui o que conseguiu interpretar com esse visual...
+:::
+
+#### 
+
+# Aula 03 - Explorando dados das vendas
+
+## Gerando 1º visual
+
+> Qual o faturamento das vendas por região do Brasil em 2023? Ajuste o visual para ordenar dados, definir limites e colocá-lo como um gráfico de barras horizontais.
+
+### Criando tabela com os dados resumidos
+
+```{r}
+vendas_por_regiao <- dados_completos %>% 
+  group_by(regiao) %>% 
+  summarise(vendas_por_regiao = sum(total))
+vendas_por_regiao
+```
+
+### Ajustando o visual
+
+```{r}
+ggplot(vendas_por_regiao, aes(x = reorder(regiao, vendas_por_regiao), 
+                              y = vendas_por_regiao)) + 
+  geom_col() +
+  scale_y_continuous(expand = c(0,0), limits = c(0, 4e6)) +
+  coord_flip()
+```
+
+::: callout-note
+## Insights
+
+Escreva aqui o que conseguiu interpretar com esse visual...
+:::
+
+## Gerando 2º visual
+
+> Qual o faturamento mensal das vendas da Zoop por região em 2023? Como as vendas performaram no Nordeste em relação a todas as outras regiões?
+
+::: {.callout-tip appearance="simple"}
+Lembre-se de adicionar no gráfico de linhas o parâmetro `group` para separar as regiões em diferentes linhas e o `color` para colorir cada reta individualmente
+:::
+
+### Criando coluna dos meses
+
+```{r}
+dados_completos <- dados_completos %>% 
+  mutate(mes = format(data, "%m"))
+```
+
+### Criando tabela com os dados resumidos
+
+```{r}
+vendas_por_mes_regiao <- dados_completos %>% 
+  group_by(mes, regiao) %>% 
+  summarise(vendas_por_mes_regiao = sum(total))
+vendas_por_mes_regiao
+```
+
+### Criando o visual
+
+```{r}
+ggplot(vendas_por_mes_regiao, 
+       aes(x = mes, y = vendas_por_mes_regiao, group=regiao, color=regiao)) +
+  geom_line(linewidth = 2, alpha = 0.5) +
+  geom_point(size = 3) +
+  ylim(0,8.5e5)
+```
+
+::: callout-note
+## Insights
+
+Escreva aqui o que conseguiu interpretar com esse visual...
+:::
+
+## Gerando 3º visual
+
+> Qual o faturamento dos estados da Região Sudeste por trimestre?
+
+### Criando coluna dos trimestres
+
+```{r}
+dados_completos <- dados_completos %>%    
+  mutate(trimestre = as.factor(quarter(data)))
+```
+
+### Criando tabela com os dados resumidos
+
+```{r}
+vendas_por_tri_estados_sul <- dados_completos %>%
+  filter(regiao == "Sul") %>% 
+  group_by(trimestre, uf) %>%    
+  summarise(total_tri_estados_sul = sum(total)) 
+vendas_por_tri_estados_sul
+```
+
+### Criando o visual
+
+```{r}
+ggplot(vendas_por_tri_estados_sul, 
+       aes(trimestre, total_tri_estados_sul, fill = uf)) +
+  geom_col(position = "dodge") +
+  scale_fill_brewer(palette = "Blues")
+```
+
+::: callout-note
+## Insights
+
+Escreva aqui o que conseguiu interpretar com esse visual...
+:::
+
+# Aula 04 - Personalizando os visuais
+
+## Definindo o tema base dos visuais
+
+### Paleta de cores da Zoop
+
+| red_1                               | red_2                               | red_3                               | grey_1                               | grey_2                               | grey_3                               | blue_1                               | blue_2                               | blue_3                               | blue_4  |
+|--------|--------|--------|-------|--------|--------|--------|-------|--------|--------|
+| #ee8399                             | #e23155                             | #881d33                             | #f3f3f3                              | #ebebeb                              | #8d8d8d                              | #a3adbd                              | #5e708c                              | #19325b                              | #0d192e |
+| ![](imagens/paleta_cores/RED_1.png) | ![](imagens/paleta_cores/RED_2.png) | ![](imagens/paleta_cores/RED_3.png) | ![](imagens/paleta_cores/GREY_1.png) | ![](imagens/paleta_cores/GREY_2.png) | ![](imagens/paleta_cores/GREY_3.png) | ![](imagens/paleta_cores/BLUE_1.png) | ![](imagens/paleta_cores/BLUE_2.png) | ![](imagens/paleta_cores/BLUE_3.png) |         |
+
+O código abaixo salva os valores hexadecimais das cores em cada variável com o código da cor
+
+```{r}
+nomes <- c("red_1", "red_2", "red_3", "grey_1", "grey_2",
+           "grey_3", "blue_1", "blue_2", "blue_3", "blue_4")
+cores <- c("#ee8399", "#e23155", "#881d33", "#f3f3f3", "#ebebeb", 
+           "#8d8d8d", "#a3adbd", "#5e708c", "#19325b", "#0d192e")
+
+for (i in seq(nomes)) assign(nomes[i],cores[i])
+```
+
+### Tema base dos visuais
+
+```{r}
+tema <- theme_minimal() +
+  theme(panel.grid.major.x = element_blank(),
+        plot.title = element_text(size=14, face="bold", vjust = +3),
+        axis.text = element_text(size = 10),
+        axis.title.x = element_text(size = 12, face = "bold", vjust = -1),
+        axis.title.y = element_text(size = 12, face = "bold", vjust = +3),
+        legend.position = "bottom")
+```
+
+## Refinando o 1º Visual
+
+### Gráfico base
+
+Adicione o gráfico de **Faturamento por região** gerado na Aula 03 e lembre-se de aplicar uma das cores da paleta no argumento fill do elemento gráfico `geom_col()` .
+
+```{r}
+# Cole Aqui o código do Visual gerado de: Faturamento por região em 2023 
+# do Mão na Massa da Aula 03
+g_vendas_por_regiao <- ggplot(vendas_por_regiao, 
+                              aes(x = reorder(regiao, vendas_por_regiao), 
+                                  y = vendas_por_regiao)) + 
+                        geom_col(fill = red_2) +
+                        scale_y_continuous(expand = c(0,0), limits = c(0, 4e6)) +
+                        coord_flip()
+g_vendas_por_regiao
+```
+
+### Adicionando tema e título
+
+```{r}
+g_vendas_por_regiao <- g_vendas_por_regiao +
+  tema +
+  labs(title = "Vendas da Zoop por Região (2023)")
+  
+g_vendas_por_regiao
+```
+
+### Adicionando labels no visual
+
+::: {.callout-tip appearance="simple"}
+Seguindo os passos anteriores corretamente, a tabela das vendas por região já estará resumida, portanto não será necessário realizar um cálculo estatístico para pegar o valor de vendas. E podemos usar o `geom_label()` diretamente com a função `number()` do scales
+:::
+
+```{r}
+g_vendas_por_regiao <- g_vendas_por_regiao +
+  geom_label(aes(label = number(vendas_por_regiao,
+                                prefix = "R$ ",
+                                scale_cut = cut_si(""))), hjust=-0.05)
+g_vendas_por_regiao
+```
+
+### Refinando o tema do 1º visual
+
+```{r}
+# Rode o código após as outras etapas para finalizar o visual
+g_vendas_por_regiao <- 
+  g_vendas_por_regiao + 
+    theme(panel.grid = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_blank())
+
+g_vendas_por_regiao
+```
+
+## Refinando o 2º Visual
+
+### Gráfico base
+
+Adicione o gráfico de **Faturamento da Região Sul por trimestre** gerado na Aula 03. Lembre-se de adicionar manualmente a paleta para o grupo das 3 colunas descritas abaixo
+
+```{r}
+cores <- c(blue_1, blue_2, blue_3)
+```
+
+```{r}
+# Cole Aqui o código do Visual gerado de: Faturamento da Região Sul por trimestre em 2023 
+# do Mão na Massa da Aula 03
+g_vendas_por_tri_estados_sul <- ggplot(vendas_por_tri_estados_sul,
+                                       aes(trimestre, total_tri_estados_sul, 
+                                           fill = uf)) +
+                                  geom_col(position = "dodge") +
+                                  scale_fill_manual(values = cores)
+g_vendas_por_tri_estados_sul
+```
+
+### Adicionando tema e títulos
+
+```{r}
+g_vendas_por_tri_estados_sul <- g_vendas_por_tri_estados_sul +
+  tema +
+  labs(title = "Vendas trimestrais da Zoop na Região Sul (2023)",
+       x = "", y = "Total de vendas", fill = "Estado")
+  
+g_vendas_por_tri_estados_sul
+```
+
+### Ajustando os valores dos eixos no visual
+
+```{r}
+g_vendas_por_tri_estados_sul <- g_vendas_por_tri_estados_sul +
+  scale_x_discrete(labels = c("1º Tri", "2º Tri", "3º Tri", "4º Tri")) +
+  scale_y_continuous(labels = label_number(prefix = "R$",
+                                            scale_cut = cut_short_scale()))
+
+g_vendas_por_tri_estados_sul
+```
+
+# Aula 05 - Concluindo o projeto
+
+## Refinando o 2º Visual
+
+### Gráfico base
+
+Adicione o gráfico de **Faturamento mensal por região** gerado na Aula 03. Lembre-se de adicionar manualmente a paleta para o grupo das 5 linhas do gráfico.
+
+```{r}
+cores <- c(blue_1, blue_2, blue_3, blue_4, grey_3)
+```
+
+```{r}
+# Cole Aqui o código do Visual gerado de: Faturamento mensal por região em 2023 
+# do Mão na Massa da Aula 03
+g_vendas_por_mes_regiao <- ggplot(vendas_por_mes_regiao,
+                                  aes(x = mes, y = vendas_por_mes_regiao,
+                                      group=regiao, color=regiao)) +
+                            geom_line(linewidth = 2, alpha = 0.5) +
+                            geom_point(size = 3) +
+                            ylim(0,8.5e5) +
+                            scale_color_manual(values = cores)
+g_vendas_por_mes_regiao
+```
+
+### Adicionando tema e títulos
+
+```{r}
+g_vendas_por_mes_regiao <- g_vendas_por_mes_regiao +
+  tema +
+  labs(title = "Vendas mensais da Zoop por região (2023)",
+       x = "Mês", y = "Total de vendas", fill = "Região")
+
+g_vendas_por_mes_regiao
+```
+
+### Ajustando os valores dos eixos no visual
+
+```{r}
+meses <- c("Jan", "Fev", "Mar", "Abr", "Mai", "Jun", 
+           "Jul", "Ago", "Set", "Out", "Nov", "Dez")
+```
+
+```{r}
+g_vendas_por_mes_regiao <- g_vendas_por_mes_regiao +
+  scale_x_discrete(labels = meses) +
+  scale_y_continuous(labels = label_number(prefix = "R$ ",
+                                            scale_cut = cut_short_scale()))
+
+g_vendas_por_mes_regiao
+```
+
+### Adicionando anotações no visual
+
+::: {.callout-tip appearance="simple"}
+Para te ajudar na criação das anaotações, este [link](https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#text) traz ótimos exemplos de como construir visuais atrativos com ggplot2.
+:::
+
+```{r}
+g_vendas_por_mes_regiao <- g_vendas_por_mes_regiao +
+  annotate("text", x = 8, y = 7.2e5, vjust = 1, size = 3.5,
+            label = "As vendas no Nordeste superaram as do\nSudeste nos meses de Jun e Out de 2023") +
+  annotate("curve", x = 8, y = 6e5, xend = 6, yend = 3e5,
+            arrow = arrow(length = unit(2, "mm"))) +
+  annotate("curve", x = 8, y = 6e5, xend = 10, yend = 3e5,
+            arrow = arrow(length = unit(2, "mm")), curvature = -0.5)
+
+g_vendas_por_mes_regiao
+```
+
+## Salvando os visuais do histórico de vendas
+
+```{r}
+ggsave("imagens/g_vendas_por_regiao.png", g_vendas_por_regiao, 
+       height = 5, width = 7, dpi=300)
+ggsave("imagens/g_vendas_por_tri_estados_sul.png", g_vendas_por_tri_estados_sul, 
+       height = 5, width = 7, dpi=300)
+ggsave("imagens/g_vendas_por_mes_regiao.png", g_vendas_por_mes_regiao, 
+       height = 5, width = 7, dpi=300)
+```
+
+Com as visualizações de dados salvas que tal renderizar todo esse documento e/ou criar um relatório e apresentação para escrever suas impressões?
+
+Você pode acessar, por exemplo, esta [aula](https://cursos.alura.com.br/course/ia-aplicada-data-science-ia-construcao-visualizacao-dados/task/152522) do curso de **IA aplicada a Data Science: utilizando IA como assistente na construção de visualização de dados** aqui da Alura que ensina a utilizar a IA do **Gamma.app** que é uma ferramenta online que cria slides para apresentações de maneira prática e fácil, baseada em Inteligência Artificial (IA).
+
+## Referências
+
+-   Documentação do tidyverse (em inglês). Disponível em: <https://tidyverse.tidyverse.org/>
+
+-   Documentação do ggplot (em inglês). Disponível em: <https://ggplot2.tidyverse.org/reference/labs.html>
+
+-   Visualização de Dados com ggplot2: cheatsheet.Disponível em: <https://rstudio.github.io/cheatsheets/translations/portuguese/data-visualization_pt.pdf>
+
+-   R for Data Science (2e) (em inglês). Disponível em: [https://r4ds.hadley.nz](https://r4ds.hadley.nz/)
+
+-   Ciência de Dados em R. Disponível em: <https://livro.curso-r.com/index.html>
+
+-   Um Tutorial de ggplot2 para gráficos estéticamente agradáveis em R (em inglês). <https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#text>
